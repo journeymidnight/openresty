@@ -1,0 +1,45 @@
+check_build_fs()
+{
+#exclude SOURCES
+for dir in ~/rpmbuild/{BUILD,RPMS,SPECS,SRPMS}
+do
+if [[ ! -d $dir ]]
+then
+echo "$dir not exsit"
+echo "mkdir -p $dir"
+mkdir -p $dir
+fi
+done
+}
+
+check_rpm_macro()
+{
+echo '%_topdir %(echo $HOME)/rpmbuild' > ~/.rpmmacros
+}
+
+mount_current_diretory()
+{
+src=~/rpmbuild/SOURCES
+if test -d $src -o -h $src
+then
+echo "delete previous link"
+rm -rf $src
+elif test -f $src
+then
+echo "delete previous file"
+rm -rf $src
+elif test -d $src
+then
+echo "$src is not a symlink,quit.."
+exit
+fi
+
+echo "create link $src"
+ln -s `pwd` $src
+}
+
+check_build_fs
+check_rpm_macro
+mount_current_diretory
+args=$*
+rpmbuild $args
