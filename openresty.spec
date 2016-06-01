@@ -25,7 +25,7 @@ OpenResty (aka. ngx_openresty) is a full-fledged web application server by bundl
 
 
 %build
-./configure --with-pcre-jit --with-luajit
+./configure --with-pcre-jit --with-luajit --add-module=./bundle/ngx_cache_purge-2.3/
 make %{?_smp_mflags}
 
 
