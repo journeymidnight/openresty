@@ -8,6 +8,8 @@ License:	BSD
 URL:		openresty.org
 Source0:	http://openresty.org/download/%{name}-%{version}.tar.gz
 Source1:	https://github.com/brnt/openresty-rpm-spec/raw/master/nginx.init
+Source2:        nginx.logrotate 
+Source3:        nginx.service
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:	sed openssl-devel pcre-devel readline-devel
@@ -36,7 +38,8 @@ mkdir -p %{buildroot}/etc/init.d
 sed -e 's/%NGINX_CONF_DIR%/%{lua: esc,qty=string.gsub(rpm.expand("%{homedir}"), "/", "\\/"); print(esc)}\/nginx\/conf/g' \
 	-e 's/%NGINX_BIN_DIR%/%{lua: esc,qty=string.gsub(rpm.expand("%{homedir}"), "/", "\\/"); print(esc)}\/nginx\/sbin/g' \
 	%{SOURCE1} > %{buildroot}/etc/init.d/nginx
-
+install -D -m 644 %{SOURCE2} %{buildroot}/etc/logrotate.d/nginx.logrotate
+install -D -m 644 %{SOURCE3} %{buildroot}/usr/lib/systemd/system/nginx.service
 
 %clean
 rm -rf %{buildroot}
@@ -47,6 +50,8 @@ rm -rf %{buildroot}
 #%{homedir}/*
 
 %attr(755,root,root) /etc/init.d/nginx
+%attr(755,root,root) /etc/logrotate.d/nginx.logrotate
+%attr(755,root,root) /usr/lib/systemd/system/nginx.service
 %{homedir}/luajit/*
 %{homedir}/lualib/*
 %{homedir}/nginx
