@@ -5,4 +5,7 @@ compress
     missingok
     compress
     minsize 100k
+    postrotate
+        /bin/kill -HUP `cat /var/run/nginx.pid 2> /dev/null` 2> /dev/null || true
+    endscript
 }
